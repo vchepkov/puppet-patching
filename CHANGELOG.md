@@ -1,8 +1,9 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+Based on https://github.com/EncoreTechnologies/puppet-patching.git
 
-## Development
+## Release 2.0.0
 
 ## Release 1.8.0 (2022-04-18)
 

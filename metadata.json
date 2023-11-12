@@ -1,12 +1,12 @@
 {
-  "name": "encore-patching",
-  "version": "1.8.0",
-  "author": "Encore Technologies",
-  "summary": "Implements OS patching workflows using Bolt tasks and plans.",
+  "name": "vchepkov-patching",
+  "version": "2.0.0-rc0",
+  "author": "Vadym Chepkov",
+  "summary": "Implements OS patching workflows using Bolt tasks and plans",
   "license": "Apache-2.0",
-  "source": "https://github.com/EncoreTechnologies/puppet-patching",
-  "project_page": "https://github.com/EncoreTechnologies/puppet-patching",
-  "issues_url": "https://github.com/EncoreTechnologies/puppet-patching/issues",
+  "source": "https://github.com/vchepkov/puppet-patching",
+  "project_page": "https://github.com/vchepkov/puppet-patching",
+  "issues_url": "https://github.com/vchepkov/puppet-patching/issues",
   "dependencies": [
     {
       "name": "puppetlabs/puppet_agent",
@@ -14,79 +14,30 @@
     },
     {
       "name": "puppetlabs/reboot",
-      "version_requirement": ">= 3.0.0 < 5.0.0"
+      "version_requirement": ">= 3.0.0 < 6.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.1 < 9.0.0"
+      "version_requirement": ">= 9.0.0 < 10.0.0"
     }
   ],
   "operatingsystem_support": [
     {
-      "operatingsystem": "SLES",
-      "operatingsystemrelease": [
-        "12",
-        "15"
-      ]
-    },
-    {
-      "operatingsystem": "CentOS",
-      "operatingsystemrelease": [
-        "7",
-        "8"
-      ]
-    },
-    {
-      "operatingsystem": "OracleLinux",
-      "operatingsystemrelease": [
-        "7",
-        "8"
-      ]
-    },
-    {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "7",
-        "8"
-      ]
-    },
-    {
-      "operatingsystem": "Scientific",
-      "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "Debian",
-      "operatingsystemrelease": [
-        "8"
-      ]
-    },
-    {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease": [
-        "16.04",
-        "18.04"
-      ]
-    },
-    {
-      "operatingsystem": "windows",
-      "operatingsystemrelease": [
-        "2008 R2",
-        "2012 R2",
-        "2016",
-        "2019",
-        "10"
+        "8",
+        "9"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.10.0 < 8.0.0"
+      "version_requirement": ">= 7.0.0 < 9.0.0"
     }
   ],
-  "pdk-version": "2.0.0",
-  "template-url": "https://github.com/puppetlabs/pdk-templates#2.0.0",
-  "template-ref": "tags/2.0.0-0-ge838f1d"
+  "pdk-version": "3.0.0",
+  "template-url": "https://github.com/puppetlabs/pdk-templates#3.0.0",
+  "template-ref": "tags/3.0.0-0-g5bfc1c0"
 }
