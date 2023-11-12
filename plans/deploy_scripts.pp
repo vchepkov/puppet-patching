@@ -1,4 +1,5 @@
 # @summary Plan to deploy scripts from a bolt control node to a bunch of hosts using Puppet.
+# @api private
 #
 # TODO support deploying without Puppet on the end node?
 #

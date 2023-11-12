@@ -1,4 +1,5 @@
 # @summary <code>get_targets()</code> except it also performs online checks and gathers facts in one step.
+# @api private
 #
 # A very common requirement when running individual plans from the commandline is that
 # each plan would need to perform the following steps:

@@ -1,5 +1,6 @@
 {
   "description": "Run post-update script on target host(s), only if it exists. If the script doesn't exist or isn't executable, then this task succeeds (this allows us to run thist task on all hosts, even if they don't have a post-update script).",
+  "private": true,
   "supports_noop": true,
   "implementations": [
     {"name": "pre_post_update_linux.sh", "requirements": ["shell"]},
@@ -12,4 +13,3 @@
     }
   }
 }
-

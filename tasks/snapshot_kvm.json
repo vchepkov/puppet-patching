@@ -1,5 +1,6 @@
 {
   "description": "Creates or deletes snapshots on a set of KVM/Libvirt hypervisors",
+  "private": true,
   "supports_noop": true,
   "implementations": [
     {

@@ -1,4 +1,5 @@
 {
   "description": "Gather system facts using 'puppet facts'. Puppet agent MUST be installed for this to work.",
+  "private": true,
   "parameters": {}
 }

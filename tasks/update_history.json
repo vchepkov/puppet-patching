@@ -1,5 +1,6 @@
 {
   "description": "Reads the update history from the JSON 'result_file'.",
+  "private": true,
   "implementations": [
     {
       "name": "update_history_linux.sh",
@@ -17,4 +18,3 @@
     }
   }
 }
-

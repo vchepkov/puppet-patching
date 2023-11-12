@@ -1,4 +1,5 @@
 # @summary Plan thatr runs 'puppet facts' on the targets and sets them as facts on the Target objects.
+# @api private
 #
 # This is inspired by: https://github.com/puppetlabs/puppetlabs-facts/blob/master/plans/init.pp
 # Except instead of just running `facter` it runs `puppet facts` to set additional

@@ -1,5 +1,6 @@
 {
   "description": "Enable or disable monitoring alerts on hosts in SolarWinds.",
+  "private": true,
   "remote": true,
   "supports_noop": true,
   "files": [
@@ -22,4 +23,3 @@
     }
   }
 }
-

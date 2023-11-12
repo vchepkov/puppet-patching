@@ -1,4 +1,5 @@
 # @summary Disable monitoring for targets in multiple services
+# @api private
 #
 # @param [TargetSpec] targets
 #   Set of targets to run against.
@@ -58,14 +59,14 @@ plan patching::monitoring_multiple (
   $monitoring_plans.each |Hash $plan_hash| {
     if $plan_hash['target'] {
       run_plan($plan_hash['plan'], $targets,
-                action            => $action,
-                monitoring_target => $plan_hash['target'],
-                noop              => $noop)
+        action            => $action,
+        monitoring_target => $plan_hash['target'],
+      noop              => $noop)
     }
     else {
       run_plan($plan_hash['plan'], $targets,
-                action => $action,
-                noop   => $noop)
+        action => $action,
+      noop   => $noop)
     }
   }
 }

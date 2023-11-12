@@ -1,5 +1,6 @@
 {
   "description": "Checks if a reboot is pending",
+  "private": true,
   "implementations": [
     {
       "name": "reboot_required_linux.sh",

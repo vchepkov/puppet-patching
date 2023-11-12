@@ -1,4 +1,5 @@
 # @summary Checks each node to see if Puppet is installed, then gather Facts on all targets.
+# @api private
 #
 # Executes the <code>puppet_agent::version</code> task to check if Puppet is installed
 # on all of the targets. Once finished, the result is split into two groups:
@@ -56,7 +57,7 @@ plan patching::check_puppet (
   $_targets = get_targets($targets)
   ## This will check all targets to verify online by checking their Puppet agent version
   $targets_version = run_task('puppet_agent::version', $_targets,
-                              _catch_errors => $filter_offline_targets)
+  _catch_errors => $filter_offline_targets)
   # if we're filtering out offline targets, then only accept the ok_set from the task above
   if $filter_offline_targets {
     $targets_filtered = $targets_version.ok_set
@@ -80,8 +81,8 @@ plan patching::check_puppet (
   }
 
   return({
-    'has_puppet' => $targets_with_puppet,
-    'no_puppet' => $targets_no_puppet,
-    'all' => $targets_with_puppet + $targets_no_puppet,
+      'has_puppet' => $targets_with_puppet,
+      'no_puppet' => $targets_no_puppet,
+      'all' => $targets_with_puppet + $targets_no_puppet,
   })
 }

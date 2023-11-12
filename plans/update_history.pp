@@ -1,4 +1,5 @@
 # @summary Collect update history from the results JSON file on the targets
+# @api private
 #
 # When executing the `patching::update` task, the data that is returned to Bolt
 # is also written into a "results" file. This plan reads the last JSON document

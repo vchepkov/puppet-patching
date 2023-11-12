@@ -1,5 +1,6 @@
 {
   "description": "Create or remove alert silences for hosts in Prometheus.",
+  "private": true,
   "remote": true,
   "supports_noop": true,
   "files": [
@@ -37,4 +38,3 @@
     }
   }
 }
-
