@@ -31,7 +31,7 @@
 #    2. A later group is a linux router. In this instance maybe the patching of the linux router
 #       affects the reachability of previous hosts.
 #
-# @param [Integer] disconnect_wait How long (in seconds) to wait before checking whether the server has rebooted. Defaults to 10.
+# @param [Integer] disconnect_wait How long (in seconds) to wait before checking whether the server has rebooted.
 #
 # @param [Boolean] noop
 #   Flag to determine if this should be a noop operation or not.
@@ -47,26 +47,18 @@
 #
 plan patching::reboot_required (
   TargetSpec  $targets,
-  Enum['only_required', 'never', 'always'] $strategy = undef,
-  String     $message = undef,
-  Integer    $wait    = undef,
-  Integer    $disconnect_wait = undef,
+  Enum['only_required', 'never', 'always'] $strategy = 'only_required',
+  String     $message = 'NOTICE: This system is currently being updated.',
+  Integer    $wait    = 300,
+  Integer    $disconnect_wait = 10,
   Boolean    $noop    = false,
 ) {
   $_targets = run_plan('patching::get_targets', $targets)
   $group_vars = $_targets[0].vars
-  $_strategy = pick($strategy,
-    $group_vars['patching_reboot_strategy'],
-  'only_required')
-  $_message = pick($message,
-    $group_vars['patching_reboot_message'],
-  'NOTICE: This system is currently being updated.')
-  $_wait = pick($wait,
-    $group_vars['patching_reboot_wait'],
-  300)
-  $_disconnect_wait = pick($disconnect_wait,
-    $group_vars['patching_disconnect_wait'],
-  10)
+  $_strategy = pick($group_vars['patching_reboot_strategy'],$strategy)
+  $_message = pick($group_vars['patching_reboot_message'],$message)
+  $_wait = pick($group_vars['patching_reboot_wait'],$wait)
+  $_disconnect_wait = pick($group_vars['patching_disconnect_wait'],$disconnect_wait)
 
   ## Check if reboot required.
   $reboot_results = run_task('patching::reboot_required', $_targets)
