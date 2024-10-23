@@ -17,7 +17,7 @@
 #
 # @param [Optional[String]] bin_dir
 #   Directory where log files will be written during patching
-
+#
 # @param [Optional[String]] owner
 #   Default owner of installed scripts
 #
