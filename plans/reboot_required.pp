@@ -1,5 +1,4 @@
 # @summary Querys a targets operating system to determine if a reboot is required and then reboots the targets that require rebooting.
-# @api private
 #
 # Patching in different environments comes with various unique requirements, one of those
 # is rebooting hosts. Sometimes hosts need to always be reboot, othertimes never rebooted.
@@ -47,11 +46,11 @@
 #
 plan patching::reboot_required (
   TargetSpec  $targets,
-  Enum['only_required', 'never', 'always'] $strategy = undef,
-  String     $message = undef,
-  Integer    $wait    = undef,
-  Integer    $disconnect_wait = undef,
-  Boolean    $noop    = false,
+  Optional[Enum['only_required', 'never', 'always']] $strategy = undef,
+  Optional[String] $message = undef,
+  Optional[Integer] $wait = undef,
+  Optional[Integer] $disconnect_wait = undef,
+  Boolean $noop = false,
 ) {
   $_targets = run_plan('patching::get_targets', $targets)
   $group_vars = $_targets[0].vars

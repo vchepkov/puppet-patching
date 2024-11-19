@@ -1,5 +1,4 @@
 # @summary Checks all targets for available updates reported by their Operating System.
-# @api private
 #
 # This uses the <code>patching::available_updates</code> task to query each Target's
 # Operating System for available updates. The results from the OS are parsed and formatted
