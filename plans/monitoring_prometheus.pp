@@ -93,7 +93,7 @@ plan patching::monitoring_prometheus (
   }
 
   if !$noop {
-    run_task('patching::monitoring_prometheus', $_monitoring_target,
+    $result = run_task('patching::monitoring_prometheus', $_monitoring_target,
       targets           => $target_names,
       action            => $action,
       prometheus_server => get_target($_monitoring_target).uri,
@@ -101,6 +101,9 @@ plan patching::monitoring_prometheus (
       silence_units     => $_monitoring_silence_units,
       ssl_verify        => $ssl_verify,
       ssl_cert          => $ssl_cert,
+      _catch_errors     => true,
     )
+    # Target is monitoring host so extract targets from the result of the task
+    return $result[0].value
   }
 }

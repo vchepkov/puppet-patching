@@ -54,7 +54,6 @@ plan patching::monitoring_multiple (
   Array[Hash]               $monitoring_plans = get_targets($targets)[0].vars['patching_monitoring_plan_multiple'],
   Boolean                   $noop = false,
 ) {
-
   # Loop over and run each monitoring plan
   $monitoring_plans.each |Hash $plan_hash| {
     if $plan_hash['target'] {
