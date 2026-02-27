@@ -153,7 +153,14 @@ plan patching (
 
   ## Loop through each group and patch
   ## If a group fails, we will collect the failed targets and fail the plan at the end
-  $update_failed_targets = $ordered_groups.reduce({}) |$failed_targets, $group_hash| {
+  $initial_accumulator = {
+    'failed_results' => {},
+    'no_updates' => [],
+    'monitoring_disabled' => false,
+    'monitoring_enable' => [],
+    'collect_history' => [],
+  }
+  $update_failed_targets = $ordered_groups.reduce($initial_accumulator) |$accumulated, $group_hash| {
     $ordered_targets = $group_hash['targets']
     if $ordered_targets.empty {
       fail_plan("Targets not assigned the var: 'patching_order'")
@@ -319,7 +326,16 @@ plan patching (
       out::message('ENABLING MONITORING ON FAILED HOSTS!!!!!!!!!!!')
       run_plan($monitoring_plan_group, $patching_results['monitoring_enable'], action => 'enable', noop => $noop)
     }
-    $patching_results
+
+    # Merge this group's results with the accumulated results from all previous groups
+    $group_result = {
+      'failed_results' => $accumulated['failed_results'] + $patching_results['failed_results'],
+      'no_updates' => $accumulated['no_updates'] + $patching_results['no_updates'],
+      'monitoring_disabled' => $patching_results['monitoring_disabled'],
+      'monitoring_enable' => $accumulated['monitoring_enable'] + $patching_results['monitoring_enable'],
+      'collect_history' => $accumulated['collect_history'] + $patching_results['collect_history'],
+    }
+    $group_result
   }
 
   ## Re-establish all targets availability after reboot
