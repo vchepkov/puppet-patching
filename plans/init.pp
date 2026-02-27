@@ -304,7 +304,9 @@ plan patching (
             'failed_results' => $filtered_results['failed_results'] + $acc['failed_results'],
           }
         } else {
-          $failed_results = $acc['failed_results'] + { 'failed_results' => $filtered_results['failed_results'] }
+          $failed_results = {
+            'failed_results' => $filtered_results['failed_results'] + $acc['failed_results'],
+          }
         }
       } else {
         $failed_results = {}

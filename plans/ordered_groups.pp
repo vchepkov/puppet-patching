@@ -120,7 +120,8 @@ plan patching::ordered_groups (
     out::message("Group '${o}' targets = ${ordered_targets}")
     # trust me, we have to assign to a variable here, it's a detail of the puppet
     # language parser that gets mad, but only because there is the loop above
-    $group = { 'order' => $o, 'targets' => $ordered_hash[$o] }
+    # Convert Target objects to names to avoid stack overflow in Bolt v4
+    $group = { 'order' => $o, 'targets' => $ordered_targets }
     $group
   }
 

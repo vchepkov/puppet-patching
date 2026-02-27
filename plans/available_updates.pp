@@ -76,10 +76,12 @@ plan patching::available_updates (
           out::message(" ${symbol} ${res.target.name} [${num_updates}]")
         }
       }
+      $has_updates_names = $has_updates.map |$target| { $target.name }
+      $no_updates_names = $no_updates.map |$target| { $target.name }
       return({
-          'has_updates' => $has_updates,
-          'no_updates'  => $no_updates,
-          'failed_results' => $filtered_results['failed_results'],
+        'has_updates' => $has_updates_names,
+        'no_updates'  => $no_updates_names,
+        'failed_results' => $filtered_results['failed_results'],
       })
     }
     'csv': {
