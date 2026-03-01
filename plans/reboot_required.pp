@@ -86,29 +86,32 @@ plan patching::reboot_required (
 
   ## Reboot the hosts that require it
   ## skip if we're in noop mode (the reboot plan doesn't support $noop)
-  if !$noop {
+  # Extract filtered results immediately to avoid keeping ResultSet with Target objects in scope
+  $reboot_filtered = if !$noop {
     case $_strategy {
       'only_required': {
         if !$targets_reboot_required_names.empty() {
-          $reboot_resultset = run_plan('reboot', $targets_reboot_required_names,
+          $reboot_temp = run_plan('reboot', $targets_reboot_required_names,
             reconnect_timeout => $_wait,
             disconnect_wait   => $_disconnect_wait,
             message           => $_message,
           _catch_errors     => true)
+          patching::filter_results($reboot_temp, 'reboot')
         }
         else {
-          $reboot_resultset = ResultSet([])
+          patching::filter_results(ResultSet([]), 'reboot')
         }
       }
       'always': {
-        $reboot_resultset = run_plan('reboot', $targets,
+        $reboot_temp = run_plan('reboot', $targets,
           reconnect_timeout => $_wait,
           disconnect_wait   => $_disconnect_wait,
           message           => $_message,
         _catch_errors     => true)
+        patching::filter_results($reboot_temp, 'reboot')
       }
       'never': {
-        $reboot_resultset = ResultSet([])
+        patching::filter_results(ResultSet([]), 'reboot')
       }
       default: {
         fail_plan("Invalid strategy: ${_strategy}")
@@ -117,11 +120,8 @@ plan patching::reboot_required (
   }
   else {
     out::message('Noop specified, skipping all reboots.')
-    $reboot_resultset = ResultSet([])
+    patching::filter_results(ResultSet([]), 'reboot')
   }
-
-  ## Check for errors during reboot
-  $reboot_filtered = patching::filter_results($reboot_resultset, 'reboot')
 
   ## Merge the failed results from both the check and the reboot
   $failed_results = $check_filtered['failed_results'] + $reboot_filtered['failed_results']
