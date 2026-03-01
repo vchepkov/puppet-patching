@@ -76,8 +76,9 @@ plan patching::reboot_required (
   # print out pretty message
   out::message("Reboot strategy: ${_strategy}")
   out::message("Host reboot required status: ('+' reboot required; '-' reboot NOT required)")
-  $targets_reboot_required = $reboot_results.filter_set|$res| { $res['reboot_required'] }.targets
-  $targets_reboot_not_required = $reboot_results.filter_set|$res| { !$res['reboot_required'] }.targets
+  # Extract target names (strings) instead of Target objects to avoid serialization issues
+  $targets_reboot_required_names = $reboot_results.filter_set|$res| { $res['reboot_required'] }.targets.map |$t| { $t.name }
+  $targets_reboot_not_required_names = $reboot_results.filter_set|$res| { !$res['reboot_required'] }.targets.map |$t| { $t.name }
   $reboot_results.each|$res| {
     $symbol = ($res['reboot_required']) ? { true => '+' , default => '-' }
     out::message(" ${symbol} ${res.target.name}")
@@ -88,21 +89,18 @@ plan patching::reboot_required (
   if !$noop {
     case $_strategy {
       'only_required': {
-        if !$targets_reboot_required.empty() {
-          $targets_reboot_attempted = $targets_reboot_required
-          $reboot_resultset = run_plan('reboot', $targets_reboot_required,
+        if !$targets_reboot_required_names.empty() {
+          $reboot_resultset = run_plan('reboot', $targets_reboot_required_names,
             reconnect_timeout => $_wait,
             disconnect_wait   => $_disconnect_wait,
             message           => $_message,
           _catch_errors     => true)
         }
         else {
-          $targets_reboot_attempted = []
           $reboot_resultset = ResultSet([])
         }
       }
       'always': {
-        $targets_reboot_attempted = $targets
         $reboot_resultset = run_plan('reboot', $targets,
           reconnect_timeout => $_wait,
           disconnect_wait   => $_disconnect_wait,
@@ -110,7 +108,6 @@ plan patching::reboot_required (
         _catch_errors     => true)
       }
       'never': {
-        $targets_reboot_attempted = []
         $reboot_resultset = ResultSet([])
       }
       default: {
@@ -120,7 +117,6 @@ plan patching::reboot_required (
   }
   else {
     out::message('Noop specified, skipping all reboots.')
-    $targets_reboot_attempted = []
     $reboot_resultset = ResultSet([])
   }
 

@@ -151,11 +151,6 @@ plan patching (
   ## Group all of the targets based on their 'patching_order' var
   $ordered_groups = run_plan('patching::ordered_groups', $_targets)
 
-  # Create a mapping of target names to Target objects for lookup
-  $target_map = $_targets.reduce({}) |$memo, $t| {
-    $memo + { $t.name => $t }
-  }
-
   ## Loop through each group and patch
   ## If a group fails, we will collect the failed targets and fail the plan at the end
   $initial_accumulator = {
@@ -171,13 +166,11 @@ plan patching (
       fail_plan("Targets not assigned the var: 'patching_order'")
     }
 
-    # Look up Target objects from the map (don't store them in accumulator)
-    $ordered_targets = $ordered_target_names.map |$name| { $target_map[$name] }
-
-    # override configurable parameters on a per-group basis
-    # if there is no customization for this group, it defaults to the global setting
-    # set at the plan level above
-    $group_vars = $ordered_targets[0].vars
+    # Look up the first target to get group vars (don't store the Target object)
+    # Find the Target object from $_targets by name and immediately access its vars
+    $first_target_name = $ordered_target_names[0]
+    $first_target = $_targets.filter |$t| { $t.name == $first_target_name }[0]
+    $group_vars = $first_target.vars
     # Prescedence: CLI > Config > Default
     $monitoring_plan_group = pick($monitoring_plan,
       $group_vars['patching_monitoring_plan'],
