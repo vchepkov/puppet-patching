@@ -127,8 +127,8 @@ plan patching::reboot_required (
   $failed_results = $check_filtered['failed_results'] + $reboot_filtered['failed_results']
 
   ## Return both sets of failures and successes (reboot not required/successfully rebooted)
-  $ok_target_objects = $_targets - $failed_results.keys
-  $ok_target_names = $ok_target_objects.map |$target| { $target.name }
+  # Convert Target objects to names immediately to avoid serialization issues
+  $ok_target_names = ($_targets - $failed_results.keys).map |$target| { $target.name }
   return({
     'ok_targets'     => $ok_target_names,
     'failed_results' => $failed_results,

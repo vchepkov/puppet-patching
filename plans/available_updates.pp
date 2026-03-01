@@ -66,8 +66,9 @@ plan patching::available_updates (
     }
     'pretty': {
       out::message("Host update status: ('+' has available update; '-' no update) [num updates]")
-      $has_updates = $available_results.filter_set|$res| { !$res['updates'].empty() }.targets
-      $no_updates = $available_results.filter_set|$res| { $res['updates'].empty() }.targets
+      # Convert to names immediately to avoid storing Target objects
+      $has_updates_names = $available_results.filter_set|$res| { !$res['updates'].empty() }.targets.map |$target| { $target.name }
+      $no_updates_names = $available_results.filter_set|$res| { $res['updates'].empty() }.targets.map |$target| { $target.name }
       $filtered_results = patching::filter_results($available_results, 'patching::available_updates')
       $available_results.each|$res| {
         if $res.value['updates'] {
@@ -76,8 +77,6 @@ plan patching::available_updates (
           out::message(" ${symbol} ${res.target.name} [${num_updates}]")
         }
       }
-      $has_updates_names = $has_updates.map |$target| { $target.name }
-      $no_updates_names = $no_updates.map |$target| { $target.name }
       return({
         'has_updates' => $has_updates_names,
         'no_updates'  => $no_updates_names,

@@ -68,23 +68,24 @@ plan patching::check_puppet (
     $targets_filtered = $targets_version
   }
   # targets without puppet will return a value {'verison' => undef}
-  $targets_with_puppet = $targets_filtered.filter_set |$res| { $res['version'] != undef }.targets
-  $targets_no_puppet = $targets_filtered.filter_set |$res| { $res['version'] == undef }.targets
+  # Convert Target objects to names immediately to avoid serialization issues
+  $targets_with_puppet_names = $targets_filtered.filter_set |$res| { $res['version'] != undef }.targets.map |$t| { $t.name }
+  $targets_no_puppet_names = $targets_filtered.filter_set |$res| { $res['version'] == undef }.targets.map |$t| { $t.name }
 
   ## get facts from each node
-  if !$targets_with_puppet.empty() {
+  if !$targets_with_puppet_names.empty() {
     # run `puppet facts` on targets with Puppet because it returns a more complete
     # set of facts than just running `facter`
-    run_plan('patching::puppet_facts', $targets_with_puppet)
+    run_plan('patching::puppet_facts', $targets_with_puppet_names)
   }
-  if !$targets_no_puppet.empty() {
+  if !$targets_no_puppet_names.empty() {
     # run `facter` if it's available otherwise get basic facts
-    run_plan('facts', $targets_no_puppet)
+    run_plan('facts', $targets_no_puppet_names)
   }
 
   return({
-      'has_puppet' => $targets_with_puppet,
-      'no_puppet' => $targets_no_puppet,
-      'all' => $targets_with_puppet + $targets_no_puppet,
+    'has_puppet' => $targets_with_puppet_names,
+    'no_puppet' => $targets_no_puppet_names,
+    'all' => $targets_with_puppet_names + $targets_no_puppet_names,
   })
 }

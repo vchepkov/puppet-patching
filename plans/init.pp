@@ -133,11 +133,11 @@ plan patching (
   ## Filter offline targets
   $check_puppet_result = run_plan('patching::check_puppet', $targets,
   filter_offline_targets => $filter_offline_targets)
-  # use all targets, both with and without puppet
-  $_targets = $check_puppet_result['all']
+  # use all targets, both with and without puppet (now these are target names, not Target objects)
+  $_target_names = $check_puppet_result['all']
 
-  # read variables for plan-level settings
-  $plan_vars = $_targets[0].vars
+  # read variables for plan-level settings (need to temporarily convert one target name to access vars)
+  $plan_vars = get_targets($_target_names[0])[0].vars
   $reboot_wait_plan = pick($reboot_wait,
     $plan_vars['patching_reboot_wait'],
   300)
@@ -149,7 +149,7 @@ plan patching (
   'patching_report.csv')
 
   ## Group all of the targets based on their 'patching_order' var
-  $ordered_groups = run_plan('patching::ordered_groups', $_targets)
+  $ordered_groups = run_plan('patching::ordered_groups', $_target_names)
 
   ## Loop through each group and patch
   ## If a group fails, we will collect the failed targets and fail the plan at the end
@@ -166,11 +166,9 @@ plan patching (
       fail_plan("Targets not assigned the var: 'patching_order'")
     }
 
-    # Look up the first target to get group vars (don't store the Target object)
-    # Find the Target object from $_targets by name and immediately access its vars
+    # Look up the first target to get group vars (convert name to Target temporarily)
     $first_target_name = $ordered_target_names[0]
-    $first_target = $_targets.filter |$t| { $t.name == $first_target_name }[0]
-    $group_vars = $first_target.vars
+    $group_vars = get_targets($first_target_name)[0].vars
     # Prescedence: CLI > Config > Default
     $monitoring_plan_group = pick($monitoring_plan,
       $group_vars['patching_monitoring_plan'],
@@ -355,7 +353,7 @@ plan patching (
   #     collecting history metrics.
   #  2. A later group is a linux router. In this instance maybe the patching of the linux router
   #     affects the reachability of previous hosts.
-  wait_until_available($_targets, wait_time => $reboot_wait_plan)
+  wait_until_available($_target_names, wait_time => $reboot_wait_plan)
 
   $summary_targets = $update_failed_targets['collect_history']
 
