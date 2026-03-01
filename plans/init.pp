@@ -161,10 +161,13 @@ plan patching (
     'collect_history' => [],
   }
   $update_failed_targets = $ordered_groups.reduce($initial_accumulator) |$accumulated, $group_hash| {
-    $ordered_targets = $group_hash['targets']
-    if $ordered_targets.empty {
+    $ordered_target_names = $group_hash['targets']
+    if $ordered_target_names.empty {
       fail_plan("Targets not assigned the var: 'patching_order'")
     }
+
+    # Convert target names back to Target objects for this group
+    $ordered_targets = get_targets($ordered_target_names)
 
     # override configurable parameters on a per-group basis
     # if there is no customization for this group, it defaults to the global setting
@@ -296,8 +299,15 @@ plan patching (
       }
 
       if $task_plan['name'] == 'patching::update' {
+        # Ensure we store target names (strings) not Target objects
+        $history_targets = $remaining_targets.map |$t| {
+          $t ? {
+            String  => $t,
+            default => $t.name,
+          }
+        }
         $collect_history = {
-          'collect_history' => $remaining_targets,
+          'collect_history' => $history_targets,
         }
       } else {
         $collect_history = {}
