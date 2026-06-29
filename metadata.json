@@ -1,6 +1,6 @@
 {
   "name": "vchepkov-patching",
-  "version": "2.0.0-rc0",
+  "version": "2.0.0",
   "author": "Vadym Chepkov",
   "summary": "Implements OS patching workflows using Bolt tasks and plans",
   "license": "Apache-2.0",
